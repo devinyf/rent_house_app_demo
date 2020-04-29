@@ -2,35 +2,15 @@ import React, { Component } from "react"
 import { Toast } from "antd-mobile"
 import { List, AutoSizer, ListRowProps } from "react-virtualized"
 
-import { httpGet } from "../../utils/http"
 import NavigationBar from "../../components/navBar"
 import { getCurrentCity } from "../../utils/coordinate"
 import styles from "./index.module.scss"
 
-interface IrowRendererType {
-  key: any
-  index: any
-  isScrolling: boolean
-  isVisible: boolean
-  style: any
-}
-
-interface IcityInfo {
-  label: string
-  value: string
-  pinyin: string
-  short: string
-}
-
-interface IcityReqType {
-  status: number
-  description: string
-  body: IcityInfo[]
-}
+import { getCityData, IcityInfo } from "../../api/citys"
 
 type organizedCitys = { [key: string]: IcityInfo[] }
 
-type CityStates = {
+type ICityStates = {
   cityObjs: organizedCitys
   cityIndexs: string[]
   selectedCity: number
@@ -39,8 +19,8 @@ type CityStates = {
 const TITLE_LEIGHT = 36
 const CONTENT_LEIGHT = 50
 
-export default class Citys extends Component<any, CityStates> {
-  constructor(props: CityStates) {
+export default class Citys extends Component<any, ICityStates> {
+  constructor(props: ICityStates) {
     super(props)
     this.state = {
       cityObjs: {},
@@ -49,24 +29,15 @@ export default class Citys extends Component<any, CityStates> {
     }
   }
   getCityList = async () => {
-    const [cityList, hotCitys] = await Promise.all([
-      httpGet<IcityReqType>("/area/city", { level: 1 }),
-      httpGet<IcityReqType>("/area/hot"),
-    ])
-    if (
-      cityList[1] ||
-      hotCitys[1] ||
-      cityList[0].status !== 200 ||
-      hotCitys[0].status !== 200
-    ) {
-      Toast.fail("network error !!")
+    const { cityList, hotCitys, err } = await getCityData()
+    if (err) {
+      Toast.fail(err)
       return
     }
-    console.log("cityList: ", cityList)
 
     // 接口城市数据按字母顺序处理 {a:{}, b:{}}
 
-    let orgCitysObj: organizedCitys = cityList[0].data.body.reduce(
+    let orgCitysObj: organizedCitys = cityList.reduce(
       (acc: organizedCitys, ele: IcityInfo): organizedCitys => {
         const tmp: string = ele.short.substring(0, 1)
         if (!acc[tmp]) {
@@ -79,7 +50,7 @@ export default class Citys extends Component<any, CityStates> {
     )
     let orgCityList = Object.keys(orgCitysObj).sort()
     // 热门城市
-    orgCitysObj["hot"] = hotCitys[0].data.body
+    orgCitysObj["hot"] = hotCitys
     orgCityList.unshift("hot")
     // 当前城市 百度地图定位
     const curCitys: any = await getCurrentCity()

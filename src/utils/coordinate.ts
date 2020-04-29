@@ -28,7 +28,8 @@ const getCurrentCity = () => {
         resolve(curCitysBody)
         return
       }
-      const [res, err] = await httpGet("/area/info", { name: cityName })
+      // todo ...any
+      const [res, err] = await httpGet<any>("/area/info", { name: cityName })
       if (err) {
         reject(err)
         return

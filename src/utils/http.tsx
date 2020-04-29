@@ -1,32 +1,29 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios"
-import { BASE_URL } from "../utils/url"
-
-type dataType = [AxiosInstance, undefined]
-type errorType = [undefined, AxiosInstance]
-
-const errCheck = (
-  innerPromise: Promise<AxiosInstance>
-): Promise<dataType | errorType> => {
-  return (
-    innerPromise
-      .then((data: AxiosInstance) => [data, undefined])
-      // .catch((error : AxiosInstance) => Promise.resolve([undefined, error]))
-      // 相当于 .catch(...) 在TS中会报错
-      .then(null, (error: AxiosInstance) => Promise.resolve([undefined, error]))
-  )
-}
+import axios, { AxiosResponse } from "axios"
+import { BASE_URL } from "../api/url"
 
 const httpConfig = axios.create({
   baseURL: BASE_URL,
   timeout: 1000,
 })
 
+const errCheck = <R extends any>(
+  innerPromise: Promise<R>
+): Promise<[R, undefined] | [undefined, R]> => {
+  return (
+    // .catch((error: R) => Promise.resolve([undefined, error]))
+    // .then(null, (error))相当于 .catch(error) 在TS中会报错
+    innerPromise
+      .then((data: R) => [data, undefined])
+      .then(null, (error: R) => Promise.resolve([undefined, error]))
+  )
+}
+
 type RequestMethods = "GET" | "POST" | "PUT" | "DELETE"
 
 // params: 请求参数 Object {key1:a, key2:b ...}
 type ParamsType = { [key: string]: any }
 
-function httpReq(
+function httpReq<T>(
   subUrl: string,
   method?: RequestMethods,
   args?: ParamsType
@@ -34,14 +31,16 @@ function httpReq(
   console.log(`innerRequest: ${BASE_URL}${subUrl}`, method, args)
   switch (method) {
     case "GET":
-      return errCheck(httpConfig.get(`${BASE_URL}${subUrl}`, { params: args }))
+      return errCheck(
+        httpConfig.get<T>(`${BASE_URL}${subUrl}`, { params: args })
+      )
     case "POST":
-      return errCheck(httpConfig.post(`${BASE_URL}${subUrl}`, args))
+      return errCheck(httpConfig.post<T>(`${BASE_URL}${subUrl}`, args))
     case "PUT":
-      return errCheck(httpConfig.put(`${BASE_URL}${subUrl}`, args))
+      return errCheck(httpConfig.put<T>(`${BASE_URL}${subUrl}`, args))
     case "DELETE":
       return errCheck(
-        httpConfig.delete(`${BASE_URL}${subUrl}`, { params: args })
+        httpConfig.delete<T>(`${BASE_URL}${subUrl}`, { params: args })
       )
     default:
       break
@@ -55,26 +54,33 @@ function httpReq(
 export function httpGet<T>(
   subUrl: string,
   params?: ParamsType
-): Promise<AxiosResponse<T>> {
+  // ): Promise<AxiosResponse<T>> {
+): Promise<[AxiosResponse<T>, any]> {
   console.log("get Request...", subUrl, params)
-  return httpReq(subUrl, "GET", params)
+  return httpReq<T>(subUrl, "GET", params)
 }
 
 export function httpPost<T>(
   subUrl: string,
   data: ParamsType
-): Promise<AxiosResponse<T>> {
+): Promise<[AxiosResponse<T>, any]> {
   console.log("post Request...", subUrl, data)
   return httpReq(subUrl, "POST", data)
 }
 
-export function httpPut(subUrl: string, data: ParamsType) {
+export function httpPut<T>(
+  subUrl: string,
+  data: ParamsType
+): Promise<[AxiosResponse<T>, any]> {
   console.log("put Request...", subUrl, data)
   subUrl = `${subUrl}/${data.id}`
   return httpReq(subUrl, "PUT", data)
 }
 
-export function httpDel(subUrl: string, key: any) {
+export function httpDel<T>(
+  subUrl: string,
+  key: any
+): Promise<[AxiosResponse<T>, any]> {
   console.log("delete Request...", subUrl, key)
   subUrl = `${subUrl}/${key}`
   return httpReq(subUrl, "DELETE", undefined)

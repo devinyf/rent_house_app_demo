@@ -4,17 +4,18 @@ import { Link } from "react-router-dom"
 
 import { Carousel, Flex, Grid, WingBlank } from "antd-mobile"
 
-import SearchBar from "../../../../components/searchBar"
+// import SearchBar from "components/searchBar"
+import SearchBar from "components/searchBar"
 
-import { httpGet } from "../../../../utils/http"
-import { BASE_URL } from "../../../../utils/url"
+import { httpGet } from "utils/http"
+import { BASE_URL } from "api/url"
 
-import { getCurrentCity } from "../../../../utils/coordinate"
+import { getCurrentCity } from "utils/coordinate"
 
-import image1 from "../../../../assets/images/nav-1.png"
-import image2 from "../../../../assets/images/nav-2.png"
-import image3 from "../../../../assets/images/nav-3.png"
-import image4 from "../../../../assets/images/nav-4.png"
+import image1 from "assets/images/nav-1.png"
+import image2 from "assets/images/nav-2.png"
+import image3 from "assets/images/nav-3.png"
+import image4 from "assets/images/nav-4.png"
 
 export default class Home extends Component<any, any> {
   constructor(props: any) {
@@ -35,7 +36,8 @@ export default class Home extends Component<any, any> {
     { icon: image4, text: "去出租", path: "/rent/add" },
   ]
   getSwiperData = async () => {
-    const [res, err] = await httpGet("/home/swiper")
+    // todo ... any
+    const [res, err] = await httpGet<any>("/home/swiper")
     if (err) {
       console.log("getSwiperData Err: ", err)
       return
@@ -47,7 +49,8 @@ export default class Home extends Component<any, any> {
     })
   }
   getGroupsData = async () => {
-    const [res, err] = await httpGet(
+    // todo ... any
+    const [res, err] = await httpGet<any>(
       "/home/groups?area=AREA%7C88cff55c-aaa4-e2e0"
     )
     if (err) {
@@ -61,7 +64,8 @@ export default class Home extends Component<any, any> {
     })
   }
   getNewsData = async () => {
-    const [res, err] = await httpGet(
+    // todo ... any
+    const [res, err] = await httpGet<any>(
       "/home/news?area=AREA%7C88cff55c-aaa4-e2e0"
     )
     if (err) {
