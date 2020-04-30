@@ -1,7 +1,7 @@
 import { httpGet } from "../utils/http"
 import { IApiRsp } from "./common"
 
-import { CITY_LIST, HOT_CITY } from "./url"
+import { CITY_LIST, HOT_CITY, CURRENT_CITY } from "./url"
 
 export type IcityInfo = {
   label: string
@@ -16,12 +16,15 @@ type getCityDataRsp = {
   err?: string
 }
 
+/**
+ * 城市列表页 获取1级城市列表
+ */
 export const getCityData = async (): Promise<getCityDataRsp> => {
   const [list, hots] = await Promise.all([
     // 城市列表
-    httpGet<IApiRsp<IcityInfo>>(CITY_LIST, { level: 1 }),
+    httpGet<IApiRsp<IcityInfo[]>>(CITY_LIST, { level: 1 }),
     // 热门城市
-    httpGet<IApiRsp<IcityInfo>>(HOT_CITY),
+    httpGet<IApiRsp<IcityInfo[]>>(HOT_CITY),
   ])
 
   if (list[1] || hots[1] || list[0].status !== 200 || hots[0].status !== 200) {
@@ -36,4 +39,31 @@ export const getCityData = async (): Promise<getCityDataRsp> => {
     cityList: list[0].data.body,
     hotCitys: hots[0].data.body,
   }
+}
+
+export type currentCityInfo = {
+  label: string
+  value: string
+}
+
+export type selectCityRsp = {
+  cityInfo: currentCityInfo
+  err?: string
+}
+
+/**
+ * 通过城市名获取城市信息
+ * @param cityName
+ */
+export const getCityByName = async (
+  cityName: string
+): Promise<selectCityRsp> => {
+  const [tCity, err] = await httpGet<IApiRsp<currentCityInfo>>(CURRENT_CITY, {
+    name: cityName,
+  })
+  if (err) {
+    return { cityInfo: { label: "", value: "" }, err: "network Err!!" }
+  }
+
+  return { cityInfo: tCity.data.body }
 }

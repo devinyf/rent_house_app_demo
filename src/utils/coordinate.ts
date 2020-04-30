@@ -1,9 +1,9 @@
-import { httpGet } from "./http"
+import { getCityByName, currentCityInfo } from "api/citys"
 
 const BMap = window.BMap
 const LOCAL_CITY = "local-city"
 
-const getLocalCitys = () => {
+const getLocalCity = () => {
   const citys = window.localStorage.getItem(LOCAL_CITY)
   if (!citys) {
     return
@@ -12,40 +12,43 @@ const getLocalCitys = () => {
   return cityObj
 }
 
-const setLoalCitys = (citys: object) => {
+const setLoalCity = (citys: currentCityInfo) => {
   window.localStorage.setItem(LOCAL_CITY, JSON.stringify(citys))
 }
 
 /**
- * 通过ip定位 获取城市坐标
+ *  当前选择的城市
  */
 const getCurrentCity = () => {
   return new Promise((resolve, reject) => {
     async function getCityIdByName(result: any) {
-      var cityName = result.name
-      const curCitysBody = getLocalCitys()
+      // 本地缓存数据
+      const curCitysBody = getLocalCity()
       if (curCitysBody) {
         resolve(curCitysBody)
         return
       }
-      // todo ...any
-      const [res, err] = await httpGet<any>("/area/info", { name: cityName })
+
+      // 通过ip获取定位的城市信息  result: 百度地图定位到的城市信息
+      var cityName: string = result.name
+      // Ip定位获取当前城市
+      const { cityInfo, err } = await getCityByName(cityName)
       if (err) {
         reject(err)
         return
       }
-      console.log("currCity:====== ", res)
-      setLoalCitys(res.data.body)
-      resolve(res.data.body)
+      console.log("currCity:====== ", cityInfo)
+
+      setLoalCity(cityInfo)
+      resolve(cityInfo)
     }
     var myCity = new BMap.LocalCity()
     myCity.get(getCityIdByName)
   })
 }
 
-export { getCurrentCity }
+export { getCurrentCity, setLoalCity }
 
-// export default { getCurrentCity }
 // var map = new BMap.Map("allmap");
 // var point = new BMap.Point(116.331398,39.897445);
 // map.centerAndZoom(point,12);

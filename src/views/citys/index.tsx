@@ -3,15 +3,16 @@ import { Toast } from "antd-mobile"
 import { List, AutoSizer, ListRowProps } from "react-virtualized"
 
 import NavigationBar from "../../components/navBar"
-import { getCurrentCity } from "../../utils/coordinate"
+import { getCurrentCity, setLoalCity } from "../../utils/coordinate"
 import styles from "./index.module.scss"
 
 import { getCityData, IcityInfo } from "../../api/citys"
+import { RouteComponentProps } from "react-router-dom"
 
 // 整理后的城市数据： 按字母排序
 type organizedCitys = { [key: string]: IcityInfo[] }
 
-type ICityStates = {
+interface ICityStates {
   cityObjs: organizedCitys
   cityIndexs: string[]
   selectedCity: number
@@ -20,8 +21,8 @@ type ICityStates = {
 const TITLE_HEIGHT = 36
 const CONTENT_HEIGHT = 50
 
-export default class Citys extends Component<any, ICityStates> {
-  constructor(props: ICityStates) {
+export default class Citys extends Component<RouteComponentProps, ICityStates> {
+  constructor(props: RouteComponentProps) {
     super(props)
     this.state = {
       cityObjs: {},
@@ -58,8 +59,6 @@ export default class Citys extends Component<any, ICityStates> {
     console.log("mapRes: ", curCitys)
     orgCitysObj["#"] = [curCitys]
     orgCityList.unshift("#")
-    // console.log("orgCitysObj", orgCitysObj)
-    // console.log("orgCityList", orgCityList)
 
     this.setState({
       cityObjs: orgCitysObj,
@@ -67,11 +66,17 @@ export default class Citys extends Component<any, ICityStates> {
     })
   }
 
+  selectCity = (item: IcityInfo) => {
+    console.log(item)
+    setLoalCity({ label: item.label, value: item.value })
+    this.props.history.goBack()
+  }
+
   // 处理显示城市名称
   formatTitle = (title: string) => {
     switch (title) {
       case "#":
-        return "定位城市"
+        return "当前城市"
       case "hot":
         return "热门城市"
 
@@ -103,7 +108,13 @@ export default class Citys extends Component<any, ICityStates> {
     // 这里是每个 title 下的数据集
     const contentList = this.state.cityObjs[title].map((ele) => {
       return (
-        <li key={ele.value} className={styles.name}>
+        <li
+          onClick={() => {
+            this.selectCity(ele)
+          }}
+          key={ele.value}
+          className={styles.name}
+        >
           {ele.label}
         </li>
       )

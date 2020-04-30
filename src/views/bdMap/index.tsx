@@ -51,8 +51,7 @@ export default class BdMap extends Component<IBdmapProps, IBdmapState> {
     console.log(label)
 
     myGeo.getPoint(
-      // label,
-      "宝安区",
+      label,
       (point: any) => {
         if (point) {
           console.log("point: ", point)

@@ -12,11 +12,16 @@ interface SearchBarProps {
 // type Iprops = SearchBarProps & React.HTMLAttributes<HTMLElement>
 
 const SearchBar: React.FC<SearchBarProps> = ({ cityName }) => {
+  const goCityListPage = () => {}
   return (
     <Flex className={styles.root}>
       <Flex className={styles.searchLeft}>
-        <span className={styles.location}>{cityName}</span>
-        <i className="iconfont icon-arrow"></i>
+        <Link to="/citylist">
+          <span className={styles.location} onClick={goCityListPage}>
+            {cityName}
+          </span>
+          <i className="iconfont icon-arrow"></i>
+        </Link>
       </Flex>
       <Link to={"/bdmap"}>
         <i className="iconfont icon-map"></i>
