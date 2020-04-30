@@ -2,13 +2,14 @@ import React, { Component } from "react"
 import styles from "./index.module.scss"
 import { Link } from "react-router-dom"
 
-import { Carousel, Flex, Grid, WingBlank } from "antd-mobile"
+import { Carousel, Flex, Grid, WingBlank, Toast } from "antd-mobile"
 
 // import SearchBar from "components/searchBar"
 import SearchBar from "components/searchBar"
 
-import { httpGet } from "utils/http"
+// import { httpGet } from "utils/http"
 import { BASE_URL } from "api/url"
+import { apiGetGroups, apiGetNews, apiGetSwipers } from "api/home"
 
 import { getCurrentCity } from "utils/coordinate"
 
@@ -35,46 +36,40 @@ export default class Home extends Component<any, any> {
     { icon: image3, text: "地图找房", path: "/map" },
     { icon: image4, text: "去出租", path: "/rent/add" },
   ]
+
   getSwiperData = async () => {
     // todo ... any
-    const [res, err] = await httpGet<any>("/home/swiper")
+
+    const { swipers, err } = await apiGetSwipers()
     if (err) {
-      console.log("getSwiperData Err: ", err)
+      Toast.fail(err)
       return
     }
-    // console.log("res: ", res)
 
     this.setState({
-      swipers: res.data.body,
+      swipers,
     })
   }
   getGroupsData = async () => {
-    // todo ... any
-    const [res, err] = await httpGet<any>(
-      "/home/groups?area=AREA%7C88cff55c-aaa4-e2e0"
-    )
+    const { groups, err } = await apiGetGroups()
     if (err) {
-      console.log("getGroupsData Err: ", err)
+      Toast.fail(err)
       return
     }
-    // console.log("groups: ", res.data.body)
 
     this.setState({
-      groups: res.data.body,
+      groups,
     })
   }
   getNewsData = async () => {
-    // todo ... any
-    const [res, err] = await httpGet<any>(
-      "/home/news?area=AREA%7C88cff55c-aaa4-e2e0"
-    )
+    const { news, err } = await apiGetNews()
     if (err) {
-      console.log("getNewsData Err: ", err)
+      Toast.fail(err)
       return
     }
-    console.log("news: ", res.data.body)
+
     this.setState({
-      news: res.data.body,
+      news,
     })
   }
 
