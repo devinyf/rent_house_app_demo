@@ -8,6 +8,7 @@ import styles from "./index.module.scss"
 
 import { getCityData, IcityInfo } from "../../api/citys"
 
+// 整理后的城市数据： 按字母排序
 type organizedCitys = { [key: string]: IcityInfo[] }
 
 type ICityStates = {
@@ -16,8 +17,8 @@ type ICityStates = {
   selectedCity: number
 }
 
-const TITLE_LEIGHT = 36
-const CONTENT_LEIGHT = 50
+const TITLE_HEIGHT = 36
+const CONTENT_HEIGHT = 50
 
 export default class Citys extends Component<any, ICityStates> {
   constructor(props: ICityStates) {
@@ -96,28 +97,29 @@ export default class Citys extends Component<any, ICityStates> {
   }
 
   // 渲染左侧城市列表 (virtualized 内部渲染方法)
-  rowRenderer = (rowProps: ListRowProps): React.ReactNode => {
-    // console.log("rowProps: ", rowProps)
+  renderCityObj = (rowProps: ListRowProps): React.ReactNode => {
+    console.log("rowProps: ", rowProps)
     const title = this.state.cityIndexs[rowProps.index]
+    // 这里是每个 title 下的数据集
     const contentList = this.state.cityObjs[title].map((ele) => {
       return (
-        <div key={ele.value} className={styles.name}>
+        <li key={ele.value} className={styles.name}>
           {ele.label}
-        </div>
+        </li>
       )
     })
 
     return (
       <div key={rowProps.key} style={rowProps.style} className={styles.city}>
-        <div className={styles.title}>{this.formatTitle(title)}</div>
-        <div className={styles.name}>{contentList}</div>
+        <h4 className={styles.title}>{this.formatTitle(title)}</h4>
+        <ul className={styles.name}>{contentList}</ul>
       </div>
     )
   }
   calcRowHeight = ({ index }: { index: number }): number => {
     const { cityIndexs, cityObjs } = this.state
     let tmpList = cityObjs[cityIndexs[index]]
-    let listHeight = TITLE_LEIGHT + CONTENT_LEIGHT * tmpList.length
+    let listHeight = TITLE_HEIGHT + CONTENT_HEIGHT * tmpList.length
     return listHeight
   }
 
@@ -126,6 +128,7 @@ export default class Citys extends Component<any, ICityStates> {
     return (
       <div className={styles.citylist}>
         <NavigationBar />
+        {/* 左侧城市列表 */}
         {cityObjs && (
           <AutoSizer>
             {({ height, width }) => (
@@ -135,11 +138,12 @@ export default class Citys extends Component<any, ICityStates> {
                 height={height}
                 rowCount={cityIndexs.length}
                 rowHeight={this.calcRowHeight}
-                rowRenderer={this.rowRenderer}
+                rowRenderer={this.renderCityObj}
               />
             )}
           </AutoSizer>
         )}
+        {/* 右侧城市索引 */}
         {cityIndexs && this.renderCityIndex()}
       </div>
     )

@@ -1,5 +1,6 @@
 import { httpGet } from "utils/http"
 import { IApiRsp } from "./common"
+import { HOME_GROUP, HOME_NEWS, HOME_SWIPER } from "./url"
 
 type swiperType = {
   alt: string
@@ -13,12 +14,11 @@ type getSwiperRsp = {
 }
 
 const apiGetSwipers = async (): Promise<getSwiperRsp> => {
-  const [res, err] = await httpGet<IApiRsp<swiperType>>("/home/swiper")
+  const [res, err] = await httpGet<IApiRsp<swiperType>>(HOME_SWIPER)
   if (err) {
     console.log("apiGetSwipers Err: ", err)
     return { swipers: [], err: "net work Err !!!" }
   }
-  console.log("debug 1111 test>>>>>>>>", res.data.body)
 
   return { swipers: res.data.body }
 }
@@ -36,9 +36,7 @@ type getGroupRsp = {
 }
 
 const apiGetGroups = async (): Promise<getGroupRsp> => {
-  const [res, err] = await httpGet<IApiRsp<groupType>>(
-    "/home/groups?area=AREA%7C88cff55c-aaa4-e2e0"
-  )
+  const [res, err] = await httpGet<IApiRsp<groupType>>(HOME_GROUP)
   if (err) {
     console.log("apiGetGroups Err: ", err)
     return { groups: [], err: "new work Err !!" }
@@ -60,9 +58,7 @@ type getNewsRsp = {
 }
 
 const apiGetNews = async (): Promise<getNewsRsp> => {
-  const [res, err] = await httpGet<IApiRsp<newsType>>(
-    "/home/news?area=AREA%7C88cff55c-aaa4-e2e0"
-  )
+  const [res, err] = await httpGet<IApiRsp<newsType>>(HOME_NEWS)
   if (err) {
     console.log("apiGetNews Err: ", err)
     return { news: [], err: "net work Error !!" }

@@ -38,8 +38,6 @@ export default class Home extends Component<any, any> {
   ]
 
   getSwiperData = async () => {
-    // todo ... any
-
     const { swipers, err } = await apiGetSwipers()
     if (err) {
       Toast.fail(err)
