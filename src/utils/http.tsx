@@ -3,7 +3,7 @@ import { BASE_URL } from "../api/url"
 
 const httpConfig = axios.create({
   baseURL: BASE_URL,
-  timeout: 1000,
+  // timeout: 1000,
 })
 
 const errCheck = <R extends any>(

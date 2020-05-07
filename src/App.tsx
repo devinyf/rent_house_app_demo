@@ -8,6 +8,7 @@ import Login from "./views/login"
 import Layout from "./views/layout"
 import Citys from "./views/citys"
 import BdMap from "./views/bdMap"
+import Detail from "./views/detail"
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/layout" component={Layout} />
           <Route path="/citylist" component={Citys} />
           <Route path="/bdmap" component={BdMap} />
+          <Route path="/detail/:id" component={Detail} />
 
           <Redirect exact from="/" to="/login" />
         </Switch>

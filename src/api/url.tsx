@@ -4,6 +4,12 @@ const CITY_LIST = "/area/city"
 const HOT_CITY = "/area/hot"
 const CURRENT_CITY = "/area/info"
 
+// map
+const MAP_INFO = "/area/map"
+
+// house
+const HOUSE = "/houses"
+
 // home
 const HOME_SWIPER = "/home/swiper"
 const HOME_GROUP = "/home/groups?area=AREA%7C88cff55c-aaa4-e2e0"
@@ -17,4 +23,6 @@ export {
   HOME_GROUP,
   HOME_NEWS,
   CURRENT_CITY,
+  MAP_INFO,
+  HOUSE,
 }
