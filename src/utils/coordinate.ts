@@ -19,7 +19,7 @@ const setLoalCity = (citys: currentCityInfo) => {
 /**
  *  当前选择的城市
  */
-const getCurrentCity = () => {
+const getCurrentCity = (): Promise<currentCityInfo> => {
   return new Promise((resolve, reject) => {
     async function getCityIdByName(result: any) {
       // 本地缓存数据

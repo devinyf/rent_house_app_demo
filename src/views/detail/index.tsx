@@ -64,6 +64,7 @@ export default class Detail extends Component<
       Toast.fail("netWork Err!!")
       return
     }
+
     this.setState(
       {
         houseInfo,
@@ -174,7 +175,7 @@ export default class Detail extends Component<
     const {
       houseInfo: {
         community,
-        coord: { longitude, latitude },
+        // coord: { longitude, latitude },
       },
     } = this.state
 

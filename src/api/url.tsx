@@ -9,6 +9,7 @@ const MAP_INFO = "/area/map"
 
 // house
 const HOUSE = "/houses"
+const HOUSE_CONDITION = "/houses/condition"
 
 // home
 const HOME_SWIPER = "/home/swiper"
@@ -25,4 +26,5 @@ export {
   CURRENT_CITY,
   MAP_INFO,
   HOUSE,
+  HOUSE_CONDITION,
 }
