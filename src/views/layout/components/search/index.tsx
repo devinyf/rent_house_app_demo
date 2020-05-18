@@ -14,6 +14,7 @@ import { getCurrentCity } from "utils/coordinate"
 import styles from "./index.module.scss"
 
 import SearchBar from "components/searchBar"
+import Affix from "components/affix"
 import FilterBar from "components/filterBar"
 import HouseItem from "components/houseItem"
 import { houseInfoType } from "api/map"
@@ -49,7 +50,7 @@ export default class Search extends Component<IProps, IStates> {
     const { value } = await getCurrentCity()
     const res = await apiGetHouseListByCondiction(value, { start, end })
     if (res.houseList.count > 0) {
-      console.log(res.houseList.list)
+      // console.log(res.houseList.list)
       if (start === 1) {
         this.setState({
           houseListData: res.houseList.list,
@@ -126,7 +127,9 @@ export default class Search extends Component<IProps, IStates> {
             className={styles.mySearchBar}
           ></SearchBar>
         </Flex>
-        <FilterBar emitFilterCriteria={this.handleFilterData} />
+        <Affix>
+          <FilterBar emitFilterCriteria={this.handleFilterData} />
+        </Affix>
         <div className={styles.houseList}>
           <WindowScroller>
             {({ height, isScrolling, onChildScroll, scrollTop }) => (
@@ -163,6 +166,8 @@ export default class Search extends Component<IProps, IStates> {
   }
 
   componentDidMount() {
+    // console.log(111111122222222)
+
     this.getLocateCity()
     this.getHouseListByCondition(1, 20)
   }

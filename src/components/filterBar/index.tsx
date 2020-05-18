@@ -307,8 +307,6 @@ export default class FilterBar extends Component<IProps, IState> {
     )
   }
   componentDidMount() {
-    // console.log(111111)
-
     this.getHouseConditionData()
     // this.getHouseListByCondition()
   }
