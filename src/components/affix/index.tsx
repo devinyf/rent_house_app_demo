@@ -9,6 +9,13 @@ const Affix: React.FC<IaffixProps> = (props) => {
   const placeholderRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
+  useEffect(() => {
+    window.addEventListener("scroll", onWindowScroll)
+    return () => {
+      window.removeEventListener("scroll", onWindowScroll)
+    }
+  }, [])
+
   const onWindowScroll = () => {
     if (placeholderRef.current != null && contentRef.current != null) {
       const { top } = placeholderRef.current.getBoundingClientRect()
@@ -21,12 +28,6 @@ const Affix: React.FC<IaffixProps> = (props) => {
       }
     }
   }
-  useEffect(() => {
-    window.addEventListener("scroll", onWindowScroll)
-    return () => {
-      window.removeEventListener("scroll", onWindowScroll)
-    }
-  }, [])
   return (
     <div>
       <div ref={placeholderRef}></div>
