@@ -127,7 +127,7 @@ export default class Search extends Component<IProps, IStates> {
             className={styles.mySearchBar}
           ></SearchBar>
         </Flex>
-        <Affix>
+        <Affix offsetTop={40}>
           <FilterBar emitFilterCriteria={this.handleFilterData} />
         </Affix>
         <div className={styles.houseList}>

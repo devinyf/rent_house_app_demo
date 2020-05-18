@@ -1,7 +1,9 @@
 import React, { useRef, useEffect } from "react"
 import styles from "./index.module.scss"
 
-type IaffixProps = {}
+type IaffixProps = {
+  offsetTop: number
+}
 
 const Affix: React.FC<IaffixProps> = (props) => {
   const placeholderRef = useRef<HTMLDivElement>(null)
@@ -12,7 +14,7 @@ const Affix: React.FC<IaffixProps> = (props) => {
       const { top } = placeholderRef.current.getBoundingClientRect()
       if (top < 0) {
         contentRef.current.classList.add(styles.fixed)
-        placeholderRef.current.style.height = "40px"
+        placeholderRef.current.style.height = `${props.offsetTop}px`
       } else {
         contentRef.current.classList.remove(styles.fixed)
         placeholderRef.current.style.height = "0px"
