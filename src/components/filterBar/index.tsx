@@ -7,7 +7,6 @@ import styles from "./index.module.scss"
 import { getCurrentCity } from "utils/coordinate"
 import {
   apiGetHouseConditionById,
-  apiGetHouseListByCondiction,
   HouseConditionType,
   HouseInfo,
 } from "api/houses"
@@ -27,6 +26,10 @@ const filterTypes: FilterCategory[] = [
   { name: "更多", type: "more" },
 ]
 
+type IProps = {
+  emitFilterCriteria: ({}) => void
+}
+
 type IState = {
   openType: OpenType
   filterCriteria: {
@@ -45,11 +48,11 @@ type IState = {
   moreValue: string[]
 }
 
-export default class FilterBar extends Component<any, IState> {
+export default class FilterBar extends Component<IProps, IState> {
   constructor(props: any) {
     super(props)
     this.state = {
-      openType: "area",
+      openType: "",
       // 房屋列表筛选条件
       filterCriteria: {
         area: ["area", "null"],
@@ -84,15 +87,6 @@ export default class FilterBar extends Component<any, IState> {
     this.setState({
       houseCondition: res.houseCondition,
     })
-  }
-  /**根须筛选条件获取房屋列表 */
-  getHouseListByCondition = async () => {
-    const { value } = await getCurrentCity()
-    const res = await apiGetHouseListByCondiction(value, { start: 1, end: 5 })
-    // console.log(">>>>>>>>: ", res)
-    if (res.houseList.count > 0) {
-      console.log(res.houseList.list)
-    }
   }
 
   toggleSelectTag = (type: OpenType) => {
@@ -268,12 +262,18 @@ export default class FilterBar extends Component<any, IState> {
     console.log("handleSubmit")
 
     const { pickedValue, filterCriteria, moreValue } = this.state
-    this.setState({
-      filterCriteria: { ...filterCriteria, ...pickedValue, more: moreValue },
-      openType: "",
-    })
+    this.setState(
+      {
+        filterCriteria: { ...filterCriteria, ...pickedValue, more: moreValue },
+        openType: "",
+      },
+      () => {
+        this.props.emitFilterCriteria(this.state.filterCriteria)
+      }
+    )
 
     // http
+    // emitFilterCriteria()
   }
 
   handleCancel = () => {
@@ -310,6 +310,6 @@ export default class FilterBar extends Component<any, IState> {
     // console.log(111111)
 
     this.getHouseConditionData()
-    this.getHouseListByCondition()
+    // this.getHouseListByCondition()
   }
 }

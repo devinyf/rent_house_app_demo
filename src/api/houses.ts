@@ -1,6 +1,7 @@
 import { httpGet } from "utils/http"
 import { IApiRsp } from "./common"
 import { HOUSE, HOUSE_CONDITION } from "./url"
+import { houseInfoType } from "api/map"
 
 export type HouseDetailType = {
   houseImg: string[]
@@ -106,32 +107,13 @@ const apiGetHouseConditionById = async (
   return { houseCondition: res.data.body }
 }
 
-export type HouseFilteredType = {
-  houseImg: string[]
-  title: string
-  tags: string[]
-  price: number
-  houseCode: string
-  desc: string
-  // roomType: string
-  // oriented: string[]
-  // floor: string
-  // community: string
-  // coord: {
-  //   latitude: number
-  //   longitude: number
-  // }
-  // supporting: string[]
-  // size: number
-}
-
-type HouseListType = {
-  list: HouseFilteredType[]
+type houseListType = {
+  list: houseInfoType[]
   count: number
 }
 
 type getHouseListByCondictionRsp = {
-  houseList: HouseListType
+  houseList: houseListType
   err?: string
 }
 
@@ -139,7 +121,7 @@ const apiGetHouseListByCondiction = async (
   cityId: string,
   args?: {}
 ): Promise<getHouseListByCondictionRsp> => {
-  const [res, err] = await httpGet<IApiRsp<HouseListType>>(HOUSE, {
+  const [res, err] = await httpGet<IApiRsp<houseListType>>(HOUSE, {
     cityId,
     ...args,
   })

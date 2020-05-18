@@ -1,4 +1,5 @@
 import React from "react"
+import "react-virtualized/styles.css"
 import "./assets/fonts/iconfont.css"
 import "./App.css"
 
