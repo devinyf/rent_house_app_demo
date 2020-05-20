@@ -4,6 +4,7 @@ import { Toast, Carousel, Flex } from "antd-mobile"
 import classnames from "classnames"
 
 import { apiGetHouseInfoById, HouseDetailType } from "api/houses"
+import { apiAddFavorite, apiDelFavorite } from "api/user"
 import { BASE_URL } from "api/url"
 import NavigationBar from "components/navBar"
 import HouseFacilites from "components/houseFacilities"
@@ -24,8 +25,9 @@ type Iparams = {
 }
 
 type Istate = {
-  houseInfo: HouseDetailType
+  houseInfo?: HouseDetailType
   imgHeight: number | string
+  isFavorate: boolean
 }
 
 export default class Detail extends Component<
@@ -35,25 +37,9 @@ export default class Detail extends Component<
   constructor(props: RouteComponentProps<Iparams>) {
     super(props)
     this.state = {
-      houseInfo: {
-        houseImg: [],
-        title: "",
-        tags: [],
-        price: 0,
-        houseCode: "",
-        description: "",
-        roomType: "",
-        oriented: [],
-        floor: "",
-        community: "",
-        coord: {
-          latitude: 0,
-          longitude: 0,
-        },
-        supporting: [],
-        size: 0,
-      },
+      houseInfo: undefined,
       imgHeight: 252,
+      isFavorate: false,
     }
   }
 
@@ -76,7 +62,38 @@ export default class Detail extends Component<
       }
     )
   }
+
+  handleFavorite = async () => {
+    const { id } = this.props.match.params
+    if (this.state.isFavorate) {
+      // 取消搜藏
+      const { isSuccess, err } = await apiDelFavorite(id)
+      if (err) {
+        Toast.fail(err)
+        return
+      }
+      if (isSuccess) {
+        this.setState({
+          isFavorate: false,
+        })
+      }
+    } else {
+      // 添加搜藏
+      const { isSuccess, err } = await apiAddFavorite(id)
+      if (err) {
+        Toast.fail(err)
+        return
+      }
+      if (isSuccess) {
+        this.setState({
+          isFavorate: true,
+        })
+      }
+    }
+  }
+
   renderCarousel = () => {
+    const { houseInfo } = this.state
     return (
       <Carousel
         autoplay={false}
@@ -84,32 +101,33 @@ export default class Detail extends Component<
         beforeChange={(from, to) => console.log(`slide from ${from} to ${to}`)}
         afterChange={(index) => console.log("slide to", index)}
       >
-        {this.state.houseInfo.houseImg.map((val) => (
-          <a
-            key={val}
-            href="http://www.alipay.com"
-            style={{
-              display: "inline-block",
-              width: "100%",
-              height: this.state.imgHeight,
-            }}
-          >
-            <img
-              src={`${BASE_URL}${val}`}
-              alt=""
+        {houseInfo &&
+          houseInfo.houseImg.map((val) => (
+            <a
+              key={val}
+              href="http://www.alipay.com"
               style={{
+                display: "inline-block",
                 width: "100%",
-                height: "100%",
-                verticalAlign: "top",
+                height: this.state.imgHeight,
               }}
-              onLoad={() => {
-                // fire window resize event to change height
-                window.dispatchEvent(new Event("resize"))
-                this.setState({ imgHeight: 252 })
-              }}
-            />
-          </a>
-        ))}
+            >
+              <img
+                src={`${BASE_URL}${val}`}
+                alt=""
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  verticalAlign: "top",
+                }}
+                onLoad={() => {
+                  // fire window resize event to change height
+                  window.dispatchEvent(new Event("resize"))
+                  this.setState({ imgHeight: 252 })
+                }}
+              />
+            </a>
+          ))}
       </Carousel>
     )
   }
@@ -117,34 +135,35 @@ export default class Detail extends Component<
     const { houseInfo } = this.state
     return (
       <div className={styles.info}>
-        <h3 className={styles.infoTitle}>{houseInfo.title}</h3>
+        <h3 className={styles.infoTitle}>{houseInfo && houseInfo.title}</h3>
         <Flex className={styles.tags}>
-          {houseInfo.tags.map((ele, idx) => {
-            const tagStyle = `tag${(idx % 3) + 1}`
-            return (
-              <span
-                key={ele}
-                className={classnames(styles.tag, styles[tagStyle])}
-              >
-                {ele}
-              </span>
-            )
-          })}
+          {houseInfo &&
+            houseInfo.tags.map((ele, idx) => {
+              const tagStyle = `tag${(idx % 3) + 1}`
+              return (
+                <span
+                  key={ele}
+                  className={classnames(styles.tag, styles[tagStyle])}
+                >
+                  {ele}
+                </span>
+              )
+            })}
         </Flex>
         <Flex className={styles.infoPrice}>
           <Flex.Item className={styles.infoPriceItem}>
             <div>
-              {houseInfo.price}
+              {houseInfo && houseInfo.price}
               <span className={styles.month}>/月</span>
             </div>
             <div>租金</div>
           </Flex.Item>
           <Flex.Item className={styles.infoPriceItem}>
-            <div>{houseInfo.roomType}</div>
+            <div>{houseInfo && houseInfo.roomType}</div>
             <div>房型</div>
           </Flex.Item>
           <Flex.Item className={styles.infoPriceItem}>
-            <div>{houseInfo.size}</div>
+            <div>{houseInfo && houseInfo.size}</div>
             <div>面积</div>
           </Flex.Item>
         </Flex>
@@ -154,13 +173,14 @@ export default class Detail extends Component<
               <span className={styles.title}>装修:</span> 精装修
             </div>
             <div>
-              <span className={styles.title}>楼层:</span> {houseInfo.floor}
+              <span className={styles.title}>楼层:</span>{" "}
+              {houseInfo && houseInfo.floor}
             </div>
           </Flex.Item>
           <Flex.Item>
             <div>
               <span className={styles.title}>朝向:</span>
-              {houseInfo.oriented.join(" ")}
+              {houseInfo && houseInfo.oriented.join(" ")}
             </div>
             <div>
               <span className={styles.title}>类型:</span>普通住宅
@@ -172,80 +192,117 @@ export default class Detail extends Component<
   }
 
   renderMap() {
-    const {
-      houseInfo: {
-        community,
-        // coord: { longitude, latitude },
-      },
-    } = this.state
+    const { houseInfo } = this.state
 
     return (
       <div className={styles.map}>
-        <div className={styles.mapTitle}>小区:{community}</div>
+        <div className={styles.mapTitle}>
+          小区:{houseInfo && houseInfo.community}
+        </div>
         <div className={styles.mapContainer} id="map"></div>
       </div>
     )
   }
   initMap = () => {
-    const {
-      houseInfo: {
-        coord: { longitude, latitude },
-        community,
-      },
-    } = this.state
+    if (this.state.houseInfo) {
+      const {
+        houseInfo: {
+          coord: { longitude, latitude },
+          community,
+        },
+      } = this.state
 
-    // 创建地图
-    const map = new BMap.Map("map")
+      // 创建地图
+      const map = new BMap.Map("map")
 
-    let point = new BMap.Point(longitude, latitude)
-    map.centerAndZoom(point, 15)
+      let point = new BMap.Point(longitude, latitude)
+      map.centerAndZoom(point, 15)
 
-    var opts = {
-      position: point, // 指定文本标注所在的地理位置
-      offset: new BMap.Size(-36, -66), //设置文本偏移量
-    }
+      var opts = {
+        position: point, // 指定文本标注所在的地理位置
+        offset: new BMap.Size(-36, -66), //设置文本偏移量
+      }
 
-    var label = new BMap.Label("", opts) // 创建文本标注对象
-    label.setStyle(labelStyle)
-    label.setContent(`
+      var label = new BMap.Label("", opts) // 创建文本标注对象
+      label.setStyle(labelStyle)
+      label.setContent(`
         <div>${community}</div>
         <div class=${styles.mapArrow}></div>
     `)
-    map.addOverlay(label)
+      map.addOverlay(label)
+    }
   }
 
   renderHouseFacilites = () => {
-    const {
-      houseInfo: { supporting },
-    } = this.state
+    if (this.state.houseInfo) {
+      const {
+        houseInfo: { supporting },
+      } = this.state
+      return (
+        <div>
+          <div>房屋配套</div>
+          {supporting.length > 0 ? (
+            <HouseFacilites supportItemlist={supporting} />
+          ) : (
+            "暂无数据"
+          )}
+        </div>
+      )
+    }
+  }
+
+  renderFooter = () => {
+    const { isFavorate } = this.state
+
     return (
-      <div>
-        <div>房屋配套</div>
-        {supporting.length > 0 ? (
-          <HouseFacilites supportItemlist={supporting} />
-        ) : (
-          "暂无数据"
-        )}
-      </div>
+      <Flex className={styles.fixedBottom} align="center">
+        <Flex.Item /*onClick={this.isFavorate}*/>
+          <img
+            style={{ height: 16 }}
+            className={styles.favoriteImg}
+            src={
+              isFavorate
+                ? "http://huangjiangjun.top:8088/img/star.png"
+                : "http://huangjiangjun.top:8088/img/unstar.png"
+            }
+            alt=""
+          />
+          <span className={styles.favorite} onClick={this.handleFavorite}>
+            {isFavorate ? "已搜藏" : "搜藏"}
+          </span>
+        </Flex.Item>
+        <Flex.Item>在线咨询</Flex.Item>
+        <Flex.Item>
+          <a className={styles.telephone} href="tel:18576486260">
+            {/*  todo 在线咨询  */}
+            电话预约
+          </a>
+        </Flex.Item>
+      </Flex>
     )
   }
 
   render() {
+    const { houseInfo } = this.state
+    console.log(this.props.match.params)
+
     return (
       <div>
         <NavigationBar
           className={styles.detailHeader}
-          title={this.state.houseInfo.community}
+          title={houseInfo && houseInfo.community}
           rightContent={[<i key="1" className="iconfont icon-share" />]}
         />
         {/* 轮播图 */}
-        {this.state.houseInfo.title !== "" && this.renderCarousel()}
+        {houseInfo && this.renderCarousel()}
         {/* 房屋信息 */}
         {this.renderBaseInfo()}
         {/* 地图 */}
         {this.renderMap()}
         {/* 房屋配套 */}
         {this.renderHouseFacilites()}
+        {/* footer 按钮 */}
+        {this.renderFooter()}
       </div>
     )
   }

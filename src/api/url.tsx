@@ -16,6 +16,12 @@ const HOME_SWIPER = "/home/swiper"
 const HOME_GROUP = "/home/groups?area=AREA%7C88cff55c-aaa4-e2e0"
 const HOME_NEWS = "/home/news?area=AREA%7C88cff55c-aaa4-e2e0"
 
+// user
+const GET_USER = "/user"
+const USER_LOGIN = "/user/login"
+const USER_LOGOUT = "/user/logout"
+const FAVORITES = "/user/favorites"
+
 export {
   BASE_URL,
   CITY_LIST,
@@ -27,4 +33,8 @@ export {
   MAP_INFO,
   HOUSE,
   HOUSE_CONDITION,
+  USER_LOGIN,
+  GET_USER,
+  USER_LOGOUT,
+  FAVORITES,
 }

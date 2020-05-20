@@ -1,10 +1,26 @@
 import axios, { AxiosResponse } from "axios"
 import { BASE_URL } from "../api/url"
+import { getLocalToken } from "utils/localStorage"
 
 const httpConfig = axios.create({
   baseURL: BASE_URL,
   // timeout: 1000,
 })
+
+httpConfig.interceptors.request.use(
+  function (config) {
+    // Do something before request is sent
+    const token = getLocalToken()
+    if (token) {
+      config.headers.Authorization = token
+    }
+    return config
+  },
+  function (error) {
+    // Do something with request error
+    return Promise.reject(error)
+  }
+)
 
 const errCheck = <R extends any>(
   innerPromise: Promise<R>
@@ -65,7 +81,7 @@ export function httpPost<T>(
   data: ParamsType
 ): Promise<[AxiosResponse<T>, any]> {
   console.log("post Request...", subUrl, data)
-  return httpReq(subUrl, "POST", data)
+  return httpReq<T>(subUrl, "POST", data)
 }
 
 export function httpPut<T>(
@@ -74,14 +90,14 @@ export function httpPut<T>(
 ): Promise<[AxiosResponse<T>, any]> {
   console.log("put Request...", subUrl, data)
   subUrl = `${subUrl}/${data.id}`
-  return httpReq(subUrl, "PUT", data)
+  return httpReq<T>(subUrl, "PUT", data)
 }
 
 export function httpDel<T>(
   subUrl: string,
-  key: any
+  data: ParamsType
 ): Promise<[AxiosResponse<T>, any]> {
-  console.log("delete Request...", subUrl, key)
-  subUrl = `${subUrl}/${key}`
-  return httpReq(subUrl, "DELETE", undefined)
+  console.log("delete Request...", subUrl, data)
+  // subUrl = `${subUrl}/${key}`
+  return httpReq<T>(subUrl, "DELETE", data)
 }
