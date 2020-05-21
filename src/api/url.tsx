@@ -21,6 +21,7 @@ const GET_USER = "/user"
 const USER_LOGIN = "/user/login"
 const USER_LOGOUT = "/user/logout"
 const FAVORITES = "/user/favorites"
+const USER_HOUSES = "/user/houses"
 
 export {
   BASE_URL,
@@ -37,4 +38,5 @@ export {
   GET_USER,
   USER_LOGOUT,
   FAVORITES,
+  USER_HOUSES,
 }

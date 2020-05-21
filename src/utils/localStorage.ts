@@ -12,4 +12,6 @@ const removeToken = () => {
   window.localStorage.removeItem(LOGIN_TOKEN)
 }
 
-export { setLocalToken, getLocalToken, removeToken }
+const isAuth = () => (getLocalToken() ? true : false)
+
+export { setLocalToken, getLocalToken, removeToken, isAuth }

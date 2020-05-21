@@ -1,7 +1,14 @@
 import { httpPost, httpGet, httpDel } from "utils/http"
 import { IApiRsp } from "./common"
-import { USER_LOGIN, USER_LOGOUT, GET_USER, FAVORITES } from "./url"
+import {
+  USER_LOGIN,
+  USER_LOGOUT,
+  GET_USER,
+  FAVORITES,
+  USER_HOUSES,
+} from "./url"
 import { getLocalToken } from "utils/localStorage"
+import { houseInfoType } from "api/map"
 
 type UserInfo = {
   username: string
@@ -39,14 +46,6 @@ type getUserRsp = {
   err?: string
 }
 
-// const defaultUserInfo = {
-//   avatar: "",
-//   gender: "",
-//   nickname: "",
-//   phone: null,
-//   id: 1,
-// }
-
 const apiGetUser = async (): Promise<getUserRsp> => {
   const [res, err] = await httpGet<IApiRsp<userInfoType>>(GET_USER)
   if (err || res.data.status !== 200) {
@@ -76,7 +75,7 @@ type FavoritesType = {
   id: string
 }
 
-type FavoritesRsp = {
+type isOkRsp = {
   isSuccess: boolean
   err?: string
 }
@@ -85,7 +84,7 @@ type FavoritesRsp = {
  *
  * @param id 房屋的code值
  */
-const apiAddFavorite = async (id: string): Promise<FavoritesRsp> => {
+const apiAddFavorite = async (id: string): Promise<isOkRsp> => {
   const token = getLocalToken()
   const [res, err] = await httpPost<IApiRsp<FavoritesType>>(
     `${FAVORITES}/${id}`,
@@ -101,19 +100,37 @@ const apiAddFavorite = async (id: string): Promise<FavoritesRsp> => {
   return { isSuccess: true }
 }
 
-const apiDelFavorite = async (id: string): Promise<FavoritesRsp> => {
+const apiDelFavorite = async (id: string): Promise<isOkRsp> => {
   const token = getLocalToken()
-  const [res, err] = await httpDel<IApiRsp<FavoritesType>>(
-    `${FAVORITES}/${id}`,
-    {
-      authorization: token,
-      id,
-    }
-  )
+  const [res, err] = await httpDel<IApiRsp<null>>(`${FAVORITES}/${id}`, {
+    authorization: token,
+    id,
+  })
   if (err || res.data.status !== 200) {
     return { isSuccess: false, err }
   }
   return { isSuccess: true }
 }
 
-export { apiLogin, apiLogout, apiGetUser, apiAddFavorite, apiDelFavorite }
+type getUserHousesRsp = {
+  myHouses?: houseInfoType[]
+  err?: string
+}
+
+const apiGetUserHouses = async (): Promise<getUserHousesRsp> => {
+  // const token = getLocalToken()
+  const [res, err] = await httpGet<IApiRsp<houseInfoType[]>>(USER_HOUSES)
+  if (err || res.data.status !== 200) {
+    return { err }
+  }
+  return { myHouses: res.data.body }
+}
+
+export {
+  apiLogin,
+  apiLogout,
+  apiGetUser,
+  apiAddFavorite,
+  apiDelFavorite,
+  apiGetUserHouses,
+}
