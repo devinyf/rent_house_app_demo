@@ -37,7 +37,6 @@ const getCurrentCity = (): Promise<currentCityInfo> => {
         reject(err)
         return
       }
-      console.log("currCity:====== ", cityInfo)
 
       setLoalCity(cityInfo)
       resolve(cityInfo)

@@ -37,8 +37,6 @@ export default class Login extends Component<RouteComponentProps, IStates> {
   handleLogin = async (userInfo: IStates) => {
     const { token, err } = await apiLogin(userInfo)
     if (err) {
-      console.log(22222)
-
       Toast.fail("NetWork Err !")
       return
     }

@@ -19,10 +19,7 @@ const NavigationBar: React.FC<NavBarProps> = ({
   className,
   rightContent,
 }) => {
-  console.log("navBarClass: ", className)
-
   const handleGoBack = () => {
-    console.log("goBack")
     history.goBack()
   }
   return (

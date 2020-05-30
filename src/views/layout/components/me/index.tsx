@@ -36,6 +36,7 @@ type IStates = {
 }
 
 export default class Me extends Component<RouteComponentProps, IStates> {
+  _isMounted = false
   constructor(props: any) {
     super(props)
     this.state = {
@@ -63,9 +64,11 @@ export default class Me extends Component<RouteComponentProps, IStates> {
       Toast.fail("请登录")
       return
     }
-    this.setState({
-      userInfo,
-    })
+    if (this._isMounted) {
+      this.setState({
+        userInfo,
+      })
+    }
   }
   handleLogout = () => {
     Modal.alert("提示", "确认退出吗？", [
@@ -76,9 +79,11 @@ export default class Me extends Component<RouteComponentProps, IStates> {
           const { isSuccess } = await apiLogout()
           if (isSuccess) {
             removeToken()
-            this.setState({
-              userInfo: undefined,
-            })
+            if (this._isMounted) {
+              this.setState({
+                userInfo: undefined,
+              })
+            }
           }
         },
       },
@@ -148,6 +153,10 @@ export default class Me extends Component<RouteComponentProps, IStates> {
     )
   }
   componentDidMount() {
+    this._isMounted = true
     this.getUserInfo()
+  }
+  componentWillUnmount() {
+    this._isMounted = false
   }
 }

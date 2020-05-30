@@ -28,6 +28,7 @@ type IStates = {
 }
 
 export default class Search extends Component<IProps, IStates> {
+  _isMounted = false
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -39,28 +40,30 @@ export default class Search extends Component<IProps, IStates> {
 
   getLocateCity = async () => {
     const res = await getCurrentCity()
-    console.log("currentCity: ", res)
-    this.setState({
-      city: res.label,
-    })
+    if (this._isMounted) {
+      this.setState({
+        city: res.label,
+      })
+    }
   }
 
   /**根须筛选条件获取房屋列表 */
   getHouseListByCondition = async (start: number, end: number) => {
     const { value } = await getCurrentCity()
     const res = await apiGetHouseListByCondiction(value, { start, end })
-    if (res.houseList.count > 0) {
-      // console.log(res.houseList.list)
-      if (start === 1) {
-        this.setState({
-          houseListData: res.houseList.list,
-          count: res.houseList.count,
-        })
-      } else {
-        this.setState({
-          houseListData: [...this.state.houseListData, ...res.houseList.list],
-          count: res.houseList.count,
-        })
+    if (this._isMounted) {
+      if (res.houseList.count > 0) {
+        if (start === 1) {
+          this.setState({
+            houseListData: res.houseList.list,
+            count: res.houseList.count,
+          })
+        } else {
+          this.setState({
+            houseListData: [...this.state.houseListData, ...res.houseList.list],
+            count: res.houseList.count,
+          })
+        }
       }
     }
   }
@@ -87,8 +90,6 @@ export default class Search extends Component<IProps, IStates> {
   }
 
   isRowLoaded = ({ index }: { index: number }): boolean => {
-    // console.log("isRowLoaded: ", index)
-
     return !!this.state.houseListData[index]
   }
 
@@ -99,7 +100,6 @@ export default class Search extends Component<IProps, IStates> {
     startIndex: number
     stopIndex: number
   }) => {
-    console.log(startIndex, stopIndex)
     return this.getHouseListByCondition(startIndex, stopIndex)
   }
 
@@ -166,9 +166,11 @@ export default class Search extends Component<IProps, IStates> {
   }
 
   componentDidMount() {
-    // console.log(111111122222222)
-
+    this._isMounted = true
     this.getLocateCity()
     this.getHouseListByCondition(1, 20)
+  }
+  componentWillUnmount() {
+    this._isMounted = false
   }
 }

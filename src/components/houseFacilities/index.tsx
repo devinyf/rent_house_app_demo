@@ -85,7 +85,6 @@ export default class HouseFacilites extends Component<IProps, IState> {
     } else {
       tmpsupportedItems = HOUSE_PACKAGE
     }
-    // console.log("supportedItems", tmpsupportedItems)
 
     this.state = {
       supportedItems: tmpsupportedItems,
@@ -98,7 +97,6 @@ export default class HouseFacilites extends Component<IProps, IState> {
       return
     }
     let { selectedItem } = this.state
-    // console.log(name)
 
     if (selectedItem.includes(name)) {
       // selectedItem.splice(name, 1)
@@ -143,7 +141,5 @@ export default class HouseFacilites extends Component<IProps, IState> {
       </ul>
     )
   }
-  componentDidMount() {
-    // console.log(">>>>>>>>>", this.props.supportItemlist)
-  }
+  componentDidMount() {}
 }

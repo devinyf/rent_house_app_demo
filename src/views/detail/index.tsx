@@ -284,7 +284,6 @@ export default class Detail extends Component<
 
   render() {
     const { houseInfo } = this.state
-    console.log(this.props.match.params)
 
     return (
       <div>
@@ -310,6 +309,5 @@ export default class Detail extends Component<
   // ================= lifeCycle Functions =================
   componentDidMount() {
     this.getHouseDetail()
-    // console.log("houseInfo: ", this.state.houseInfo)
   }
 }

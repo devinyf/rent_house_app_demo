@@ -45,8 +45,6 @@ export default class BdMap extends Component<IBdmapProps, IBdmapState> {
   }
   // 渲染地图覆盖层
   renderOverLayData = async (areaId: string, bdMap: any, zoomLevel: number) => {
-    console.log("debug... 111")
-
     Toast.loading("Loading...", 0, () => {
       console.log("Load complete !!!")
     })
@@ -99,7 +97,6 @@ export default class BdMap extends Component<IBdmapProps, IBdmapState> {
           bdMap.centerAndZoom(point, zoomLevel + 2)
           this.renderOverLayData(ele.value, bdMap, zoomLevel + 2)
         } else {
-          console.log("event: ", e)
           if (e.changedTouches.length > 0) {
             const { clientX, clientY } = e.changedTouches[0]
             const moveX = window.screen.width / 2 - clientX
@@ -114,12 +111,9 @@ export default class BdMap extends Component<IBdmapProps, IBdmapState> {
           })
         }
       })
-      // console.log("before AddOverly: ", overLayLabel)
 
       bdMap.addOverlay(overLayLabel)
     })
-
-    // return overLayLabel
   }
 
   getHouseListInfo = async (id: string) => {
@@ -135,7 +129,6 @@ export default class BdMap extends Component<IBdmapProps, IBdmapState> {
 
   getCityInfo = async () => {
     let res: any = await getCurrentCity()
-    console.log("curCity: ", res)
     this.setState({
       curCityInfo: res,
     })
@@ -155,15 +148,11 @@ export default class BdMap extends Component<IBdmapProps, IBdmapState> {
     // 获取当前城市坐标  地址解析
     let myGeo = new BMap.Geocoder()
     // 将地址解析结果显示在地图上，并调整地图视野
-    console.log(label)
 
     myGeo.getPoint(
       label,
       (point: any) => {
-        console.log("debug...Point: ", point)
         if (point) {
-          console.log("point: ", point)
-
           let zoomLevel = 11
           this.bdmap.centerAndZoom(point, zoomLevel)
 
@@ -210,8 +199,6 @@ export default class BdMap extends Component<IBdmapProps, IBdmapState> {
     )
   }
   componentDidMount() {
-    console.log(222)
-
     this.getCityInfo()
   }
 }

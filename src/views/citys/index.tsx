@@ -56,7 +56,6 @@ export default class Citys extends Component<RouteComponentProps, ICityStates> {
     orgCityList.unshift("hot")
     // 当前城市 百度地图定位
     const curCitys: any = await getCurrentCity()
-    console.log("mapRes: ", curCitys)
     orgCitysObj["#"] = [curCitys]
     orgCityList.unshift("#")
 
@@ -67,7 +66,6 @@ export default class Citys extends Component<RouteComponentProps, ICityStates> {
   }
 
   selectCity = (item: IcityInfo) => {
-    console.log(item)
     setLoalCity({ label: item.label, value: item.value })
     this.props.history.goBack()
   }
@@ -103,7 +101,6 @@ export default class Citys extends Component<RouteComponentProps, ICityStates> {
 
   // 渲染左侧城市列表 (virtualized 内部渲染方法)
   renderCityObj = (rowProps: ListRowProps): React.ReactNode => {
-    console.log("rowProps: ", rowProps)
     const title = this.state.cityIndexs[rowProps.index]
     // 这里是每个 title 下的数据集
     const contentList = this.state.cityObjs[title].map((ele) => {

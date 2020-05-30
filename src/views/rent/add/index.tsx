@@ -102,14 +102,12 @@ export default class RentAdd extends Component<RouteComponentProps, Istate> {
     type: string,
     index: number | undefined
   ) => {
-    console.log(files, type, index)
     this.setState({
       files,
     })
   }
 
   handleSelectedData = (data: string) => {
-    console.log("handleSelectedData: ", data)
     if (data) {
       this.setState({
         supporting: data,
@@ -122,14 +120,11 @@ export default class RentAdd extends Component<RouteComponentProps, Istate> {
   }
 
   publishHouse = async () => {
-    console.log(this.state)
-
     const { isSucc, err } = await apiAddUserHouse(this.state)
     if (err) {
       Toast.fail(err)
       return
     }
-    console.log("publishHouse", isSucc)
     if (isSucc) {
       this.props.history.replace("/rent")
     }
@@ -315,8 +310,6 @@ export default class RentAdd extends Component<RouteComponentProps, Istate> {
             files={files}
             onChange={this.handlePhotoChange}
             selectable={files.length < 9}
-            // onImageClick={(index, fs) => console.log(index, fs)}
-            // multiple={this.state.multiple}
           />
         </List>
         <List renderHeader={() => "房屋配套"}>

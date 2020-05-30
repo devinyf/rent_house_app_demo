@@ -34,7 +34,6 @@ export const getCityData = async (): Promise<getCityDataRsp> => {
       err: "network Error !",
     }
   }
-  console.log("getCityData OK")
   return {
     cityList: list[0].data.body,
     hotCitys: hots[0].data.body,

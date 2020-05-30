@@ -17,6 +17,7 @@ export default class RentSearch extends Component<
   RouteComponentProps,
   IStates
 > {
+  _isMounted = false
   constructor(props: any) {
     super(props)
     this.state = {
@@ -25,28 +26,29 @@ export default class RentSearch extends Component<
     }
   }
   handleOnChange = _.debounce(async (keyword: string) => {
-    console.log(keyword)
     const { comm, err } = await apiGetCommunitys(keyword, this.state.cityId)
     if (err) {
       Toast.fail("NetWork Err !!")
       return
     }
-    console.log("debug222")
 
-    this.setState({
-      commlist: comm,
-    })
+    if (this._isMounted) {
+      this.setState({
+        commlist: comm,
+      })
+    }
   }, 500)
 
   getCityInfo = async () => {
     let { value } = await getCurrentCity()
-    this.setState({
-      cityId: value,
-    })
+    if (this._isMounted) {
+      this.setState({
+        cityId: value,
+      })
+    }
   }
 
   toggleSelect = ({ community, communityName }: CommunitysType) => {
-    // console.log(222)
     store.dispatch({
       type: "SET_COMMUNITY",
       payload: { community, communityName },
@@ -82,6 +84,11 @@ export default class RentSearch extends Component<
   }
 
   componentDidMount() {
+    this._isMounted = true
     this.getCityInfo()
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
   }
 }

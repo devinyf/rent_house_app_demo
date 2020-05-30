@@ -16,6 +16,7 @@ import image3 from "assets/images/nav-3.png"
 import image4 from "assets/images/nav-4.png"
 
 export default class Home extends Component<any, any> {
+  _isMounted = false
   constructor(props: any) {
     super(props)
     this.state = {
@@ -41,9 +42,11 @@ export default class Home extends Component<any, any> {
       return
     }
 
-    this.setState({
-      swipers,
-    })
+    if (this._isMounted) {
+      this.setState({
+        swipers,
+      })
+    }
   }
   getGroupsData = async () => {
     const { groups, err } = await apiGetGroups()
@@ -51,10 +54,11 @@ export default class Home extends Component<any, any> {
       Toast.fail(err)
       return
     }
-
-    this.setState({
-      groups,
-    })
+    if (this._isMounted) {
+      this.setState({
+        groups,
+      })
+    }
   }
   getNewsData = async () => {
     const { news, err } = await apiGetNews()
@@ -62,18 +66,20 @@ export default class Home extends Component<any, any> {
       Toast.fail(err)
       return
     }
-
-    this.setState({
-      news,
-    })
+    if (this._isMounted) {
+      this.setState({
+        news,
+      })
+    }
   }
 
   getLocateCity = async () => {
     const res = await getCurrentCity()
-    console.log("currentCity: ", res)
-    this.setState({
-      cityInfo: res,
-    })
+    if (this._isMounted) {
+      this.setState({
+        cityInfo: res,
+      })
+    }
   }
 
   renderSwiper() {
@@ -96,7 +102,9 @@ export default class Home extends Component<any, any> {
               onLoad={() => {
                 // fire window resize event to change height
                 window.dispatchEvent(new Event("resize"))
-                this.setState({ imgHeight: "auto" })
+                if (this._isMounted) {
+                  this.setState({ imgHeight: "auto" })
+                }
               }}
             />
           </a>
@@ -195,10 +203,13 @@ export default class Home extends Component<any, any> {
   }
 
   componentDidMount() {
-    // console.log(style)
+    this._isMounted = true
     this.getSwiperData()
     this.getGroupsData()
     this.getNewsData()
     this.getLocateCity()
+  }
+  componentWillUnmount() {
+    this._isMounted = false
   }
 }

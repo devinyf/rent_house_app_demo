@@ -16,7 +16,6 @@ type getSwiperRsp = {
 const apiGetSwipers = async (): Promise<getSwiperRsp> => {
   const [res, err] = await httpGet<IApiRsp<swiperType[]>>(HOME_SWIPER)
   if (err) {
-    console.log("apiGetSwipers Err: ", err)
     return { swipers: [], err: "net work Err !!!" }
   }
 
@@ -38,7 +37,6 @@ type getGroupRsp = {
 const apiGetGroups = async (): Promise<getGroupRsp> => {
   const [res, err] = await httpGet<IApiRsp<groupType[]>>(HOME_GROUP)
   if (err) {
-    console.log("apiGetGroups Err: ", err)
     return { groups: [], err: "new work Err !!" }
   }
   return { groups: res.data.body }
@@ -60,10 +58,8 @@ type getNewsRsp = {
 const apiGetNews = async (): Promise<getNewsRsp> => {
   const [res, err] = await httpGet<IApiRsp<newsType[]>>(HOME_NEWS)
   if (err) {
-    console.log("apiGetNews Err: ", err)
     return { news: [], err: "net work Error !!" }
   }
-  console.log("news: ", res.data.body)
   return { news: res.data.body }
 }
 

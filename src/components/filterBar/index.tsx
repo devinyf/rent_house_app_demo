@@ -49,6 +49,7 @@ type IState = {
 }
 
 export default class FilterBar extends Component<IProps, IState> {
+  _isMounted = false
   constructor(props: any) {
     super(props)
     this.state = {
@@ -80,13 +81,15 @@ export default class FilterBar extends Component<IProps, IState> {
       },
     }
   }
+
   getHouseConditionData = async () => {
     const { value } = await getCurrentCity()
     const res = await apiGetHouseConditionById(value)
-    // console.log("houseCondition: ", res)
-    this.setState({
-      houseCondition: res.houseCondition,
-    })
+    if (this._isMounted) {
+      this.setState({
+        houseCondition: res.houseCondition,
+      })
+    }
   }
 
   toggleSelectTag = (type: OpenType) => {
@@ -130,14 +133,9 @@ export default class FilterBar extends Component<IProps, IState> {
       </Flex>
     )
   }
+
   changeValue = (value: string[]) => {
     const { openType, pickedValue } = this.state
-    // this.setState({
-    //   pickedValue: {
-    //     ...this.state.pickedValue,
-    //     [openType]: value,
-    //   },
-    // })
     if (openType !== "" && openType !== "more") {
       pickedValue[openType] = value
 
@@ -146,6 +144,7 @@ export default class FilterBar extends Component<IProps, IState> {
       })
     }
   }
+
   renderPickerView = () => {
     const {
       openType,
@@ -259,8 +258,6 @@ export default class FilterBar extends Component<IProps, IState> {
   }
 
   handleSubmit = () => {
-    console.log("handleSubmit")
-
     const { pickedValue, filterCriteria, moreValue } = this.state
     this.setState(
       {
@@ -271,13 +268,9 @@ export default class FilterBar extends Component<IProps, IState> {
         this.props.emitFilterCriteria(this.state.filterCriteria)
       }
     )
-
-    // http
-    // emitFilterCriteria()
   }
 
   handleCancel = () => {
-    console.log("handleCancel")
     this.setState({
       openType: "",
     })
@@ -307,7 +300,10 @@ export default class FilterBar extends Component<IProps, IState> {
     )
   }
   componentDidMount() {
+    this._isMounted = true
     this.getHouseConditionData()
-    // this.getHouseListByCondition()
+  }
+  componentWillUnmount() {
+    this._isMounted = false
   }
 }
