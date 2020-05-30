@@ -12,6 +12,8 @@ import Citys from "./views/citys"
 import BdMap from "./views/bdMap"
 import Detail from "./views/detail"
 import Rent from "./views/rent"
+import RentAdd from "./views/rent/add"
+import RentSearch from "./views/rent/search"
 
 function App() {
   return (
@@ -24,7 +26,9 @@ function App() {
           <Route path="/bdmap" component={BdMap} />
           <Route path="/detail/:id" component={Detail} />
 
-          <AuthRoute path="/rent" component={Rent} />
+          <AuthRoute exact path="/rent" component={Rent} />
+          <AuthRoute path="/rent/add" component={RentAdd} />
+          <AuthRoute path="/rent/search" component={RentSearch} />
 
           <Redirect exact from="/" to="/login" />
         </Switch>

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios"
+import axios, { AxiosResponse, AxiosRequestConfig } from "axios"
 import { BASE_URL } from "../api/url"
 import { getLocalToken } from "utils/localStorage"
 
@@ -42,7 +42,8 @@ type ParamsType = { [key: string]: any }
 function httpReq<T>(
   subUrl: string,
   method?: RequestMethods,
-  args?: ParamsType
+  args?: ParamsType,
+  config?: AxiosRequestConfig
 ): Promise<any> {
   console.log(`innerRequest: ${BASE_URL}${subUrl}`, method, args)
   switch (method) {
@@ -51,7 +52,7 @@ function httpReq<T>(
         httpConfig.get<T>(`${BASE_URL}${subUrl}`, { params: args })
       )
     case "POST":
-      return errCheck(httpConfig.post<T>(`${BASE_URL}${subUrl}`, args))
+      return errCheck(httpConfig.post<T>(`${BASE_URL}${subUrl}`, args, config))
     case "PUT":
       return errCheck(httpConfig.put<T>(`${BASE_URL}${subUrl}`, args))
     case "DELETE":
@@ -78,7 +79,8 @@ export function httpGet<T>(
 
 export function httpPost<T>(
   subUrl: string,
-  data: ParamsType
+  data: ParamsType,
+  config?: AxiosRequestConfig
 ): Promise<[AxiosResponse<T>, any]> {
   console.log("post Request...", subUrl, data)
   return httpReq<T>(subUrl, "POST", data)

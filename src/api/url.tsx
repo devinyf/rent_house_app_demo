@@ -3,6 +3,7 @@ const BASE_URL = process.env.REACT_APP_BASEURL
 const CITY_LIST = "/area/city"
 const HOT_CITY = "/area/hot"
 const CURRENT_CITY = "/area/info"
+const COMMUNITYS = "/area/community"
 
 // map
 const MAP_INFO = "/area/map"
@@ -10,6 +11,7 @@ const MAP_INFO = "/area/map"
 // house
 const HOUSE = "/houses"
 const HOUSE_CONDITION = "/houses/condition"
+const HOUSE_IMAGE = "/houses/image"
 
 // home
 const HOME_SWIPER = "/home/swiper"
@@ -31,6 +33,7 @@ export {
   HOME_GROUP,
   HOME_NEWS,
   CURRENT_CITY,
+  COMMUNITYS,
   MAP_INFO,
   HOUSE,
   HOUSE_CONDITION,
@@ -39,4 +42,5 @@ export {
   USER_LOGOUT,
   FAVORITES,
   USER_HOUSES,
+  HOUSE_IMAGE,
 }

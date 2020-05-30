@@ -63,30 +63,74 @@ type ItemType = {
 }
 
 type IProps = {
-  supportItemlist: string[]
+  supportItemlist: string[] | "all"
+  editable?: true
+  emitSelectedData?: (data: string) => void
 }
+
 type IState = {
   supportedItems: ItemType[]
+  selectedItem: string[]
 }
 
 export default class HouseFacilites extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
-    const tmpsupportedItems = HOUSE_PACKAGE.filter((ele) => {
-      return this.props.supportItemlist.includes(ele.name)
-    })
-    console.log("supportedItems", tmpsupportedItems)
+    const { supportItemlist, editable } = this.props
+    let tmpsupportedItems: ItemType[] = []
+    if (!editable) {
+      tmpsupportedItems = HOUSE_PACKAGE.filter((ele) => {
+        return supportItemlist.includes(ele.name)
+      })
+    } else {
+      tmpsupportedItems = HOUSE_PACKAGE
+    }
+    // console.log("supportedItems", tmpsupportedItems)
 
     this.state = {
       supportedItems: tmpsupportedItems,
+      selectedItem: [],
     }
+  }
+  toggleFac = (name: string) => {
+    if (!this.props.editable) {
+      console.log("not editable")
+      return
+    }
+    let { selectedItem } = this.state
+    // console.log(name)
+
+    if (selectedItem.includes(name)) {
+      // selectedItem.splice(name, 1)
+      selectedItem = selectedItem.filter((ele) => {
+        return ele !== name
+      })
+    } else {
+      selectedItem.push(name)
+    }
+
+    this.setState(
+      {
+        selectedItem,
+      },
+      () => {
+        this.props.emitSelectedData &&
+          this.props.emitSelectedData(this.state.selectedItem.join("|"))
+      }
+    )
   }
   render() {
     return (
       <ul className={styles.root}>
         {this.state.supportedItems.map((ele) => {
           return (
-            <li className={styles.item} key={ele.id}>
+            <li
+              className={classnames(styles.item, {
+                [styles.active]: this.state.selectedItem.includes(ele.name),
+              })}
+              key={ele.id}
+              onClick={() => this.toggleFac(ele.name)}
+            >
               <p>
                 <i
                   className={classnames(`iconfont`, ele.icon, styles.icon)}

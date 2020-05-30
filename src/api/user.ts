@@ -126,6 +126,19 @@ const apiGetUserHouses = async (): Promise<getUserHousesRsp> => {
   return { myHouses: res.data.body }
 }
 
+type addUserHouseRsp = {
+  isSucc: boolean
+  err?: string
+}
+
+const apiAddUserHouse = async (data: any): Promise<addUserHouseRsp> => {
+  const [res, err] = await httpPost<IApiRsp<any>>(USER_HOUSES, data)
+  if (err || res.data.status !== 200) {
+    return { isSucc: false, err }
+  }
+  return { isSucc: true }
+}
+
 export {
   apiLogin,
   apiLogout,
@@ -133,4 +146,5 @@ export {
   apiAddFavorite,
   apiDelFavorite,
   apiGetUserHouses,
+  apiAddUserHouse,
 }

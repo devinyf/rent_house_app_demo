@@ -45,6 +45,8 @@ export default class BdMap extends Component<IBdmapProps, IBdmapState> {
   }
   // 渲染地图覆盖层
   renderOverLayData = async (areaId: string, bdMap: any, zoomLevel: number) => {
+    console.log("debug... 111")
+
     Toast.loading("Loading...", 0, () => {
       console.log("Load complete !!!")
     })
@@ -208,6 +210,8 @@ export default class BdMap extends Component<IBdmapProps, IBdmapState> {
     )
   }
   componentDidMount() {
+    console.log(222)
+
     this.getCityInfo()
   }
 }

@@ -1,13 +1,10 @@
 import React, { Component } from "react"
-import styles from "./index.module.scss"
 import { Link } from "react-router-dom"
-
 import { Carousel, Flex, Grid, WingBlank, Toast } from "antd-mobile"
 
-// import SearchBar from "components/searchBar"
 import SearchBar from "components/searchBar"
+import styles from "./index.module.scss"
 
-// import { httpGet } from "utils/http"
 import { BASE_URL } from "api/url"
 import { apiGetGroups, apiGetNews, apiGetSwipers } from "api/home"
 
@@ -33,7 +30,7 @@ export default class Home extends Component<any, any> {
   navs = [
     { icon: image1, text: "整租", path: "/layout/search" },
     { icon: image2, text: "合租", path: "/layout/search" },
-    { icon: image3, text: "地图找房", path: "/map" },
+    { icon: image3, text: "地图找房", path: "/bdmap" },
     { icon: image4, text: "去出租", path: "/rent/add" },
   ]
 

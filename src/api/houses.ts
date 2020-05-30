@@ -1,6 +1,6 @@
-import { httpGet } from "utils/http"
+import { httpGet, httpPost } from "utils/http"
 import { IApiRsp } from "./common"
-import { HOUSE, HOUSE_CONDITION } from "./url"
+import { HOUSE, HOUSE_CONDITION, HOUSE_IMAGE } from "./url"
 import { houseInfoType } from "api/map"
 
 export type HouseDetailType = {
@@ -138,8 +138,28 @@ const apiGetHouseListByCondiction = async (
   return { houseList: res.data.body }
 }
 
+type UploadFileRsp = {
+  urls: string[]
+  err?: string
+}
+
+const apiUploadHouseImgs = async (
+  formData: FormData
+): Promise<UploadFileRsp> => {
+  const [res, err] = await httpPost<IApiRsp<string[]>>(HOUSE_IMAGE, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  })
+  if (err || res.data.status !== 200) {
+    return { urls: [], err: "netWork Err !" }
+  }
+  return { urls: res.data.body }
+}
+
+// const api
+
 export {
   apiGetHouseInfoById,
   apiGetHouseConditionById,
   apiGetHouseListByCondiction,
+  apiUploadHouseImgs,
 }

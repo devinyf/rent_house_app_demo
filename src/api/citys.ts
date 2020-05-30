@@ -1,7 +1,7 @@
 import { httpGet } from "../utils/http"
 import { IApiRsp } from "./common"
 
-import { CITY_LIST, HOT_CITY, CURRENT_CITY } from "./url"
+import { CITY_LIST, HOT_CITY, CURRENT_CITY, COMMUNITYS } from "./url"
 
 export type IcityInfo = {
   label: string
@@ -58,12 +58,42 @@ export type selectCityRsp = {
 export const getCityByName = async (
   cityName: string
 ): Promise<selectCityRsp> => {
-  const [tCity, err] = await httpGet<IApiRsp<currentCityInfo>>(CURRENT_CITY, {
+  const [res, err] = await httpGet<IApiRsp<currentCityInfo>>(CURRENT_CITY, {
     name: cityName,
   })
   if (err) {
     return { cityInfo: { label: "", value: "" }, err: "network Err!!" }
   }
 
-  return { cityInfo: tCity.data.body }
+  return { cityInfo: res.data.body }
+}
+
+export type CommunitysType = {
+  city: string
+  cityName: string
+  area: string
+  areaName: string
+  street: string
+  streetName: string
+  community: string
+  communityName: string
+}
+
+type getCommunitysRsp = {
+  comm?: CommunitysType[]
+  err?: string
+}
+
+export const apiGetCommunitys = async (
+  name: string,
+  id: string
+): Promise<getCommunitysRsp> => {
+  const [res, err] = await httpGet<IApiRsp<CommunitysType[]>>(COMMUNITYS, {
+    name,
+    id,
+  })
+  if (err || res.data.status !== 200) {
+    return { err: "network Err!!" }
+  }
+  return { comm: res.data.body }
 }
