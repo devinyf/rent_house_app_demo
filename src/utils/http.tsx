@@ -1,11 +1,27 @@
 import axios, { AxiosResponse, AxiosRequestConfig } from "axios"
 import { BASE_URL } from "../api/url"
 import { getLocalToken } from "utils/localStorage"
+import { removeToken } from "utils/localStorage"
 
 const httpConfig = axios.create({
   baseURL: BASE_URL,
   // timeout: 1000,
 })
+
+// Add a response interceptor
+httpConfig.interceptors.response.use(
+  function (response) {
+    // Do something with response data
+    if (response.data.status === 400) {
+      removeToken()
+    }
+    return response
+  },
+  function (error) {
+    // Do something with response error
+    return Promise.reject(error)
+  }
+)
 
 httpConfig.interceptors.request.use(
   function (config) {
