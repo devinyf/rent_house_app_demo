@@ -1,15 +1,18 @@
-import React, { Component } from "react"
-
+import React, { Component, lazy, Suspense } from "react"
 import { Switch, Route, Redirect } from "react-router-dom"
-
 import { TabBar } from "antd-mobile"
 
 import style from "./index.module.scss"
+// 组件
+// import Home from "./components/home"
+// import Search from "./components/search"
+// import News from "./components/news"
+// import Me from "./components/me"
 
-import Home from "./components/home"
-import Search from "./components/search"
-import News from "./components/news"
-import Me from "./components/me"
+const Home = lazy(() => import("./components/home"))
+const Search = lazy(() => import("./components/search"))
+const News = lazy(() => import("./components/news"))
+const Me = lazy(() => import("./components/me"))
 
 export default class Layout extends Component<any, any> {
   constructor(props: any) {
@@ -70,13 +73,16 @@ export default class Layout extends Component<any, any> {
     return (
       <div className={style.layout}>
         <div>
-          <Switch>
-            <Route path="/layout/home" component={Home} />
-            <Route path="/layout/search" component={Search} />
-            <Route path="/layout/news" component={News} />
-            <Route path="/layout/me" component={Me} />
-            <Redirect exact from="/layout" to="/layout/home" />
-          </Switch>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Switch>
+              <Route path="/layout/home" component={Home} />
+              <Route path="/layout/search" component={Search} />
+              <Route path="/layout/news" component={News} />
+              <Route path="/layout/me" component={Me} />
+              <Redirect exact from="/layout" to="/layout/home" />
+            </Switch>
+          </Suspense>
+
           <div className={style.layout}>{this.renderTabBar()}</div>
         </div>
       </div>
