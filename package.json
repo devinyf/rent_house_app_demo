@@ -15,7 +15,7 @@
     "@types/react-router-dom": "^5.1.4",
     "@types/react-virtualized": "^9.21.9",
     "antd-mobile": "^2.3.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "classnames": "^2.2.6",
     "cross-env": "^7.0.2",
     "fibers": "^4.0.2",
