@@ -57,7 +57,7 @@
     "@types/lodash": "^4.14.152",
     "babel-plugin-import": "^1.13.0",
     "customize-cra": "^0.9.1",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "react-app-rewired": "^2.1.5",
     "sass-loader": "^8.0.2"
   }
